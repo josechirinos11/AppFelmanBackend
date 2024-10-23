@@ -1,0 +1,14 @@
+npm init                   --- para creae el proyecto, seguir los pasos nombre licencia y demas
+    para iniciar proyecto npm install luego npm run dev
+npm i express              --- 
+npm i --save-dev nodemon   --- reinicia automaticamente el servidor al hacer cambios
+npm i mongoose             --- es un ORM para la comunicacion con la base de datos
+npm i dotenv               --- para usar las variables de entorno
+npm i bcrypt               --- hashea password y comprobar el password
+npm i jsonwebtoken         --- genera y comprueba los jwt
+
+La foma de crear una ruta:
+    1. codificamos en index.js la ruta apuntando xxxxRoutes a la carpeta routes y se crear el archivo
+    2. en el archivo xxxxRoutes se hacen todas las rutas referente a la misma, operaciones CRUD y de mas
+    3. no olvidar los modelos de la database en nuestro caso mogoDB
+    4. llevar un orden de codigo escribiendo los helpers apartes o middleware

@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import conectarDB from "./config/db.js";
-//import usuarioRoutes from "./routes/usuarioRoutes.js"
+import usuarioRoutes from "./routes/usuarioRoutes.js"
 
 
 
@@ -29,8 +29,8 @@ const corsOptions = {
 //app.use(cors(corsOptions));
 
 
-//console.log("Registrando rutas de Usuarios");
-//app.use("/api/usuarios", usuarioRoutes)
+console.log("Registrando rutas de Usuarios");
+app.use("/felman/usuarios", usuarioRoutes)
 
 
 const PORT = process.env.PORT || 4000;
