@@ -21,7 +21,7 @@ const emailRegistro = async (datos) => {
     text: "Comprueba tu cuenta en Felman",
     html: `<p>Hola: ${nombre}, comprueba tu cuenta en Felman.</p>
         <p>Tu cuenta ya esta lista, solo debes comprobarla en el siguiente enlace:
-        <a href="${process.env.FRONTEND_URL}/felman/usuarios/confirmar/${token}">Comprobar Cuenta</a> </p>
+        <a href="${process.env.VITE_BACKEND_URL}/felman/usuarios/confirmar/${token}">Comprobar Cuenta</a> </p>
 
         <p>Si tu no creaste esta cuenta, puedes ignorar este mensaje</p>
     `,
