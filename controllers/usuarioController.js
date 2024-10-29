@@ -105,29 +105,37 @@ const autenticar = async (req, res) => {
 
 const olvidePassword = async (req, res) => {
   const { email } = req.body;
+  console.log(email);
 
+  // Buscar el usuario por correo
   const existeUsuario = await Usuario.findOne({ email });
+  
+  // Verificar si el usuario existe
   if (!existeUsuario) {
-    const error = new Error("El Usuario no existe");
+    const error = new Error("El usuario no existe");
     return res.status(400).json({ msg: error.message });
   }
 
   try {
+    // Generar un nuevo token y guardarlo en el usuario
     existeUsuario.token = generarId();
     await existeUsuario.save();
 
-    // Enviar Email con instrucciones
-    emailOlvidePassword({
+    // Enviar email con instrucciones
+    await emailOlvidePassword({
       email,
       nombre: existeUsuario.nombre,
       token: existeUsuario.token,
     });
 
+    // Responder con un mensaje de éxito
     res.json({ msg: "Hemos enviado un email con las instrucciones" });
   } catch (error) {
-    console.log(error);
+    console.error("Error al procesar la solicitud:", error);
+    res.status(500).json({ msg: "Hubo un error al procesar la solicitud" });
   }
 };
+
 
 const comprobarToken = async (req, res) => {
   // se lee el token enviado por la url
