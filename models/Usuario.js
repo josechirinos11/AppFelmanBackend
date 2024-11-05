@@ -23,6 +23,11 @@ const usuarioSchema = mongoose.Schema({
     default: null,
     trim: true,
   },
+  rol: {
+    type: String,
+    enum: ["admin", "empleado"],  // Puedes añadir más roles según sea necesario
+    required: true,
+  },
   web: {
     type: String,
     default: null,

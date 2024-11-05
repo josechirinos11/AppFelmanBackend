@@ -1,0 +1,38 @@
+Inicio
+   |
+   ├── Usuarios
+   │       ├── ID de usuario
+   │       ├── Nombre
+   │       ├── Email
+   │       ├── Rol
+   │       ├── [Agregar Empleados]
+   │       └── [Administrar Departamentos]
+   │       
+   ├── Empleados
+   │       ├── ID de empleado
+   │       ├── Nombre
+   │       ├── Email
+   │       ├── Teléfono
+   │       ├── Departamento
+   │       ├── [Agregar Clientes]
+   │       └── [Generar Informes]
+   │       
+   ├── Departamentos
+   │       ├── ID de departamento
+   │       ├── Nombre del departamento
+   │       └── Descripción
+   │       
+   ├── Clientes
+   │       ├── ID de cliente
+   │       ├── Nombre
+   │       ├── Email
+   │       ├── Teléfono
+   │       ├── Dirección
+   │       └── [Agregar Pedidos]
+   │       
+   └── Proveedores
+           ├── ID de proveedor
+           ├── Nombre
+           ├── Contacto
+           └── [Agregar Pedidos de Compra]
+Fin

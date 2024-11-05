@@ -137,7 +137,7 @@ const olvidePassword = async (req, res) => {
 };
 
 
-const comprobarToken = async (req, res) => {
+const   comprobarToken = async (req, res) => {
   // se lee el token enviado por la url
   const { token } = req.params;
  // se busca ese token en la base de datos

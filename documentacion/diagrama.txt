@@ -1,0 +1,62 @@
+Inicio
+   |
+   ├── Recursos Humanos
+   │       ├── Empleados
+   │       ├── Departamentos
+   │       ├── Roles y permisos
+   │       └── Contratistas y consultores externos
+   |
+   ├── Clientes y Ventas
+   │       ├── Clientes
+   │       ├── Prospectos
+   │       ├── Contratos y acuerdos
+   │       ├── Pedidos y órdenes
+   │       └── Facturación y cobros
+   |
+   ├── Proveedores y Abastecimiento
+   │       ├── Proveedores
+   │       ├── Contratos
+   │       ├── Pedidos de compra
+   │       └── Pagos y cuentas a pagar
+   |
+   ├── Productos y Servicios
+   │       ├── Inventario de productos
+   │       ├── Servicios ofrecidos
+   │       ├── Gestión de precios
+   │       └── Categorías y variantes
+   |
+   ├── Finanzas
+   │       ├── Cuentas por cobrar
+   │       ├── Movimientos de caja
+   │       ├── Presupuestos y previsiones
+   │       └── Impuestos y cumplimiento
+   |
+   ├── Operaciones y Logística
+   │       ├── Inventario
+   │       ├── Proyectos y tareas
+   │       ├── Gestión de flota
+   │       └── Mantenimiento de equipos
+   |
+   ├── Documentación y Cumplimiento
+   │       ├── Documentos legales
+   │       ├── Políticas de cumplimiento
+   │       ├── Documentación de procesos
+   │       └── Registros de auditoría
+   |
+   ├── Tecnología e Infraestructura
+   │       ├── Sistemas y plataformas
+   │       ├── Equipos tecnológicos
+   │       ├── Red de TI
+   │       └── Soporte técnico
+   |
+   ├── Marketing y Relaciones Públicas
+   │       ├── Campañas publicitarias
+   │       ├── Leads y oportunidades
+   │       ├── Colaboradores externos
+   │       └── Redes sociales
+   |
+   └── Gestión de Calidad
+           ├── Estándares de calidad
+           ├── Control de calidad
+           └── Procesos de mejora continua
+Fin

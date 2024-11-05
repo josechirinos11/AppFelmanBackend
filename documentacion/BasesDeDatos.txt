@@ -1,0 +1,45 @@
+Relación entre Modelos
+    Con estos modelos adicionales, puedes estructurar las relaciones de esta manera:
+
+    Usuario tiene un rol que define sus permisos (ej. admin o empleado).
+    Empleado se relaciona con Departamento a través de un campo departamentoId.
+    Cliente y Proveedor pueden tener pedidos, cada uno representado en el modelo Pedido:
+    Pedido puede relacionarse con un Cliente (para pedidos regulares) o con un Proveedor (para pedidos de compra).
+
+Ejemplo de Consultas
+
+    const empleadosDelDepartamento = await Empleado.find({ departamentoId: departamento._id });
+
+    const pedidosDelCliente = await Pedido.find({ clienteId: cliente._id });
+
+    const pedidosDeCompra = await Pedido.find({ proveedorId: proveedor._id });
+
+
+Consultas especificas en referencia con el Usuario
+
+    const clientesConUsuarioInfo = await Cliente.find({ usuarioId: usuario._id }).populate("usuarioId", "nombre email");
+
+otros tipos de Consultas
+
+Ejemplos de Consultas
+
+Consultar la Ubicación de un Artículo en el Inventario
+
+javascript
+Copy code
+const ubicacionArticulo = await Inventario.findById(articuloId).select("coordenadas");
+Obtener Todas las Tareas de un Proyecto
+
+javascript
+Copy code
+const tareasDelProyecto = await Tarea.find({ proyectoId: proyecto._id });
+Consultar Vehículos Disponibles en la Flota
+
+javascript
+Copy code
+const vehiculosDisponibles = await Flota.find({ estado: "disponible" });
+Consultar Mantenimientos de un Equipo Específico
+
+javascript
+Copy code
+const mantenimientosDelEquipo = await MantenimientoEquipo.find({ equipoId: equipo._id });
