@@ -15,19 +15,22 @@ conectarDB();
 
 const dominiosPermitidos = process.env.FRONTEND_URL.split(",");
 
+// Configuración de CORS
 const corsOptions = {
   origin: function (origin, callback) {
-    if (dominiosPermitidos.indexOf(origin) !== -1) {
-      // El Origen del Request esta permitido
-      callback(null, true);
+    // Permitir solicitudes solo desde los dominios listados en la variable de entorno
+    if (dominiosPermitidos.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);  // El origen está permitido
     } else {
       callback(new Error("No permitido por CORS"));
     }
   },
+  methods: ["GET", "POST", "PUT", "DELETE"],  // Métodos permitidos
+  allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
 };
 
-//app.use(cors(corsOptions));
-app.use(cors()); // Permitir todos los orígenes
+app.use(cors(corsOptions));
+//app.use(cors()); // Permitir todos los orígenes
 
 
 console.log("Registrando rutas de Usuarios");
