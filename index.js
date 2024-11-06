@@ -22,8 +22,8 @@ const corsOptions = {
   credentials: true,  // Si es necesario para cookies de sesión
 };
 
-app.use(cors(corsOptions));
-//app.use(cors()); // Permitir todos los orígenes
+//app.use(cors(corsOptions));
+app.use(cors()); // Permitir todos los orígenes
 
 
 console.log("Registrando rutas de Usuarios");
