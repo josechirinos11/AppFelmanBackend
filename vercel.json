@@ -1,10 +1,15 @@
 {
   "version": 2,
- 
+  "builds": [
+    {
+      "src": "index.js", 
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
-      "src": "/felman/(.*)",
-      "dest": "/index.js"  
+      "src": "/(.*)",
+      "dest": "/"  
     }
   ]
 }
