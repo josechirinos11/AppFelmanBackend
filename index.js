@@ -26,8 +26,8 @@ const corsOptions = {
   },
 };
 
-app.use(cors(corsOptions));
-//app.use(cors()); // Permitir todos los orígenes
+//app.use(cors(corsOptions));
+app.use(cors()); // Permitir todos los orígenes
 
 
 console.log("Registrando rutas de Usuarios");
