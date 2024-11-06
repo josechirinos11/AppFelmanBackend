@@ -15,15 +15,14 @@ conectarDB();
 
 const dominiosPermitidos = process.env.FRONTEND_URL.split(",");
 
-// Configura CORS para permitir el origen de frontend
+// Configura CORS para permitir todos los orígenes
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL, 'https://app-felman-frontend.vercel.app'], // Asegúrate de que estos orígenes estén bien configurados
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  origin: '*', // Esto permitirá que cualquier origen haga solicitudes a tu backend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
   credentials: true,  // Si es necesario para cookies de sesión
 };
-
-//app.use(cors(corsOptions));
-app.use(cors()); // Permitir todos los orígenes
+app.use(cors(corsOptions));
+//app.use(cors()); // Permitir todos los orígenes
 
 
 console.log("Registrando rutas de Usuarios");
