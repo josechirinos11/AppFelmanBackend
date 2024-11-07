@@ -5,7 +5,7 @@ import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 
 
-
+// creando
 const app = express();
 app.use(express.json());  //para decirle que vamos a enviarles datos de tipo json
 
