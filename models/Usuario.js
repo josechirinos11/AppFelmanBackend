@@ -26,7 +26,7 @@ const usuarioSchema = mongoose.Schema({
   rol: {
     type: String,
     enum: ["admin", "empleado"],  // Puedes añadir más roles según sea necesario
-    required: true,
+    required: false,
   },
   web: {
     type: String,

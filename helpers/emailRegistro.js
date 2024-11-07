@@ -4,6 +4,7 @@ const emailRegistro = async (datos) => {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
+    //secure: false,  // Cambia a `true` si usas el puerto 465
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -11,11 +12,11 @@ const emailRegistro = async (datos) => {
   });
 
   const { email, nombre, token } = datos;
-
+console.log('email del usuario: ', email)
   //Enviar el email
 
   const info = await transporter.sendMail({
-    from: "APV - Administrador de Pacientes de Veterinaria",
+    from: '"Felman App" <no-reply@felmanapp.com>',
     to: email,
     subject: "Comprueba tu cuenta en Felman",
     text: "Comprueba tu cuenta en Felman",

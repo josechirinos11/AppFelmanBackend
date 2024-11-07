@@ -3,6 +3,7 @@ import generarJWT from "../helpers/generarJWT.js";
 import generarId from "../helpers/generarId.js";
 import emailRegistro from "../helpers/emailRegistro.js";
 import emailOlvidePassword from "../helpers/emailOlvidePassword.js";
+import emailRegistroProduccion from "../helpers/emailRegistroProduccion.js";
 
 
   
@@ -26,7 +27,7 @@ import emailOlvidePassword from "../helpers/emailOlvidePassword.js";
       const usuarioGuardado = await usuario.save();
   
       // Enviar el email
-      emailRegistro({
+      emailRegistroProduccion({
         email,
         nombre,
         token: usuarioGuardado.token,
