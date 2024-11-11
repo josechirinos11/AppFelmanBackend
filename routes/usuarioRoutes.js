@@ -6,7 +6,8 @@ import {
   autenticar,
   olvidePassword,
   comprobarToken,
-  nuevoPassword
+  nuevoPassword,
+  agregarTrabajador
 } from "../controllers/usuarioController.js";
 import checkAuth from "../middleware/authMiddleware.js";
 
@@ -23,6 +24,9 @@ router.post("/olvide-password", olvidePassword);
 router.route("/olvide-password/:token").get(comprobarToken).post(nuevoPassword);
 
 // Area privada
+router.post("/recursos-humanos/", agregarTrabajador)
+
+
 
 
 export default router;

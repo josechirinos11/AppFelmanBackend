@@ -1,4 +1,5 @@
 import Usuario from "../models/Usuario.js"
+import Trabajador from "../models/Trabajador.js";
 import generarJWT from "../helpers/generarJWT.js";
 import generarId from "../helpers/generarId.js";
 import emailRegistro from "../helpers/emailRegistro.js";
@@ -6,42 +7,42 @@ import emailOlvidePassword from "../helpers/emailOlvidePassword.js";
 import emailRegistroProduccion from "../helpers/emailRegistroProduccion.js";
 
 
-  
-  const registrar = async (req, res) => {
-   
-    const { email, nombre } = req.body;
 
-    console.log(email)
-    console.log(nombre)
-  
-    // Prevenir usuarios duplicados
-    const existeUsuario = await Usuario.findOne({ email });
-    if (existeUsuario) {
-      const error = new Error("Usuario ya registrado");
-      return res.status(400).json({ msg: error.message });
-    }
-  
-    try {
-      // Guardar un Nuevo Usuario
-      const usuario = new Usuario(req.body);
-      const usuarioGuardado = await usuario.save();
-  
-      // Enviar el email
-      emailRegistroProduccion({
-        email,
-        nombre,
-        token: usuarioGuardado.token,
-      });
-  
-      res.json(usuarioGuardado);
-    } catch (error) {
-      console.log(error);
-    }
+const registrar = async (req, res) => {
+
+  const { email, nombre } = req.body;
+
+  console.log(email)
+  console.log(nombre)
+
+  // Prevenir usuarios duplicados
+  const existeUsuario = await Usuario.findOne({ email });
+  if (existeUsuario) {
+    const error = new Error("Usuario ya registrado");
+    return res.send('agregando trabajador');
   }
+
+  try {
+    // Guardar un Nuevo Usuario
+    const usuario = new Usuario(req.body);
+    const usuarioGuardado = await usuario.save();
+
+    // Enviar el email
+    emailRegistroProduccion({
+      email,
+      nombre,
+      token: usuarioGuardado.token,
+    });
+
+    res.json(usuarioGuardado);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 const perfil = (req, res) => {
-   
+
   const { usuario } = req;
   res.json(usuario);
 };
@@ -72,36 +73,70 @@ const confirmar = async (req, res) => {
 const autenticar = async (req, res) => {
   const { email, password } = req.body;
 
-  // Comprobar si el usuario existe
-  const usuario = await Usuario.findOne({ email });
-  if (!usuario) {
-    const error = new Error("El Usuario no existe");
-    return res.status(404).json({ msg: error.message });
+
+  try {
+    // Realizamos ambas búsquedas en paralelo
+    const [usuario, trabajador] = await Promise.all([
+      Usuario.findOne({ email }),
+      Trabajador.findOne({ email })
+    ]);
+
+    // Verificamos si se encontró en alguna de las dos colecciones
+    if (usuario) {
+      // Comprobar si el usuario esta confirmado
+      if (!usuario.confirmado) {
+        const error = new Error("Tu Cuenta no ha sido confirmada, revisa tu correo");
+        return res.status(403).json({ msg: error.message });
+      }
+      //comprobar passwor del usuario
+      if (await usuario.comprobarPassword(password)) {
+        // Autenticar
+        //genero el token
+        const token = generarJWT(usuario.id)
+        console.log("el token del usuario es:   ", token)
+        res.json({
+          _id: usuario._id,
+          nombre: usuario.nombre,
+          email: usuario.email,
+          token,
+        });
+      } else {
+        const error = new Error("El Password es incorrecto");
+        return res.status(403).json({ msg: error.message });
+      }
+    } else if (trabajador) {
+      // Comprobar si el usuario esta confirmado
+      if (!trabajador.confirmado) {
+        const error = new Error("Tu Cuenta no ha sido confirmada, revisa tu correo");
+        return res.status(403).json({ msg: error.message });
+      }
+      //comprobar passwor del Trabajador
+      if (await trabajador.comprobarPassword(password)) {
+        // Autenticar
+        //genero el token
+        const token = generarJWT(trabajador.id)
+        console.log("el token del trabajador es:   ", token)
+        res.json({
+          _id: trabajador._id,
+          nombre: trabajador.nombre,
+          email: trabajador.email,
+          token,
+        });
+      } else {
+        const error = new Error("El Password es incorrecto");
+        return res.status(403).json({ msg: error.message });
+      }
+    } else {
+      const error = new Error("No existe registros de esa informacion, Verifique!");
+      return res.status(404).json({ msg: error.message });
+    }
+  } catch (error) {
+    console.error('Error al buscar el email:', error);
+    throw new Error('Error en la búsqueda');
   }
-  // Comprobar si el usuario esta confirmado
-  if (!usuario.confirmado) {
-    const error = new Error("Tu Cuenta no ha sido confirmada");
-    return res.status(403).json({ msg: error.message });
-  }
-  
-  // Revisar el password
-  // en el modelo Usuario ya esta esa funcion comprobarPassword
-  // y le enviamos el password, asi dentro del modelo compara la password del formulario y database
-  if (await usuario.comprobarPassword(password)) {
-    // Autenticar
-    //genero el token
-    const token = generarJWT(usuario.id)
-    console.log("el token del usuario es:   ", token)
-    res.json({
-      _id: usuario._id,
-      nombre: usuario.nombre,
-      email: usuario.email,
-      token,
-    });
-  } else {
-    const error = new Error("El Password es incorrecto");
-    return res.status(403).json({ msg: error.message });
-  }
+
+
+
 };
 
 const olvidePassword = async (req, res) => {
@@ -110,7 +145,7 @@ const olvidePassword = async (req, res) => {
 
   // Buscar el usuario por correo
   const existeUsuario = await Usuario.findOne({ email });
-  
+
   // Verificar si el usuario existe
   if (!existeUsuario) {
     const error = new Error("El usuario no existe");
@@ -138,10 +173,10 @@ const olvidePassword = async (req, res) => {
 };
 
 
-const   comprobarToken = async (req, res) => {
+const comprobarToken = async (req, res) => {
   // se lee el token enviado por la url
   const { token } = req.params;
- // se busca ese token en la base de datos
+  // se busca ese token en la base de datos
   const tokenValido = await Usuario.findOne({ token });
 
   if (tokenValido) {
@@ -232,9 +267,41 @@ const actualizarPassword = async (req, res) => {
   }
 };
 
+const agregarTrabajador = async (req, res) => {
+  const { email, nombre, password, usuarioId } = req.body;
+  console.log('agregando trabajador')
+
+
+  // Prevenir usuarios duplicados
+  const existeTrabajador = await Trabajador.findOne({ email });
+  if (existeTrabajador) {
+    const error = new Error("Trabajador ya registrado");
+    return res.send('Trabajador ya registrado');
+  }
+
+  try {
+    // Guardar un Nuevo Usuario
+    const trabajador = new Trabajador(req.body);
+    const trabajadorGuardado = await trabajador.save();
+
+    // Enviar el email
+    emailRegistroProduccion({
+      email,
+      nombre,
+      token: trabajadorGuardado.token,
+    });
+
+    res.json(usuarioGuardado);
+  } catch (error) {
+    console.log(error);
+  }
+
+
+}
+
 export {
-  
-    registrar,
+
+  registrar,
   perfil,
   confirmar,
   autenticar,
@@ -243,4 +310,5 @@ export {
   nuevoPassword,
   actualizarPerfil,
   actualizarPassword,
+  agregarTrabajador,
 };
