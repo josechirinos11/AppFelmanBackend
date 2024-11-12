@@ -280,7 +280,7 @@ const agregarTrabajador = async (req, res) => {
   }
 
   try {
-    // Guardar un Nuevo Usuario
+    // Guardar un Nuevo trabajador
     const trabajador = new Trabajador(req.body);
     const trabajadorGuardado = await trabajador.save();
 
@@ -291,13 +291,24 @@ const agregarTrabajador = async (req, res) => {
       token: trabajadorGuardado.token,
     });
 
-    res.json(usuarioGuardado);
+    res.json(trabajadorGuardado);
   } catch (error) {
     console.log(error);
   }
 
 
 }
+
+const traerTrabajadores = async (req, res) => {
+  try {
+    const trabajadores = await Trabajador.find(); // Traer todos los trabajadores
+    res.json(trabajadores);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensaje: "Error al obtener los trabajadores" });
+  }
+};
+
 
 export {
 
@@ -311,4 +322,5 @@ export {
   actualizarPerfil,
   actualizarPassword,
   agregarTrabajador,
+  traerTrabajadores
 };

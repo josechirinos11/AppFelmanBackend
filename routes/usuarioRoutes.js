@@ -7,7 +7,8 @@ import {
   olvidePassword,
   comprobarToken,
   nuevoPassword,
-  agregarTrabajador
+  agregarTrabajador,
+  traerTrabajadores
 } from "../controllers/usuarioController.js";
 import checkAuth from "../middleware/authMiddleware.js";
 
@@ -22,10 +23,12 @@ router.post("/olvide-password", olvidePassword);
 // router.get("/olvide-password/:token", comprobarToken);
 // router.post("/olvide-password/:token", nuevoPassword);
 router.route("/olvide-password/:token").get(comprobarToken).post(nuevoPassword);
+router.get("/recursos-humanos/", traerTrabajadores)
+
 
 // Area privada
 router.post("/recursos-humanos/", agregarTrabajador)
-
+router.get("/recursos-humanos/", traerTrabajadores)
 
 
 

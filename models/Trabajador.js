@@ -22,7 +22,7 @@ const trabajadorSchema = mongoose.Schema({
   },
   identificacion: {
     type: String,
-    unique: true,
+   
     trim: true,
     default: null,
   },
