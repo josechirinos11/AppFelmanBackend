@@ -34,6 +34,37 @@ app.use("/felman/trabajadores", trabajadorRoutes);  // Rutas de trabajadores
 
 
 
+//usando SSE
+app.get("/events", (req, res) => {
+  // Establecer las cabeceras para una conexión SSE
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders(); // Enviar las cabeceras inmediatamente
+
+  // Enviar datos cada 5 segundos
+  const interval = setInterval(() => {
+    const data = {
+      message: "Actualización en tiempo real",
+      timestamp: new Date().toISOString(),
+    };
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+  }, 5000); // Cada 5 segundos
+
+  // Limpiar el intervalo cuando el cliente se desconecta
+  req.on('close', () => {
+    clearInterval(interval);
+    res.end();
+  });
+});
+
+
+
+
+
+
+
+
 // Sirviendo los archivos estáticos del frontend desde la carpeta de build
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "build"))); // Asegúrate de que "build" sea la carpeta correcta
