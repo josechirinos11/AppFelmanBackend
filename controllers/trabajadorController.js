@@ -5,6 +5,7 @@ import generarId from "../helpers/generarId.js";
 import emailRegistro from "../helpers/emailRegistro.js";
 import emailOlvidePassword from "../helpers/emailOlvidePassword.js";
 import emailRegistroProduccion from "../helpers/emailRegistroProduccion.js";
+import bcrypt from "bcryptjs";
 
 
 
@@ -45,6 +46,23 @@ const verificarConexion = (req, res) => {
 
   return res.json({ mensaje: "Listado de la base de datos" })
 
+
+}
+
+const traerCampos = async (req, res) => {
+
+  try {
+    // Extraer las claves del esquema del modelo Trabajador
+    const campos = Object.keys(Trabajador.schema.obj).filter(
+      (campo) => !['usuarioId', 'token', '__v', '_id'].includes(campo) // Excluye los campos que no quieres incluir
+    );
+
+    // Devuelve los campos en un arreglo
+    return res.json(campos);
+  } catch (error) {
+    console.error('Error al obtener los campos del esquema:', error);
+    return res.status(500).json({ mensaje: 'Error al obtener los campos del esquema' });
+  }
 
 }
 
@@ -103,7 +121,7 @@ const verificarConexion = (req, res) => {
   
   const actualizarTrabajadorID = async (req, res) => {
     const { id } = req.params; // Obtener el ID del trabajador desde los parámetros de la ruta
-    const { nombre, password, email, identificacion, puesto, salario, telefono } = req.body;
+    const datosActualizados = req.body; // Todos los datos enviados en la solicitud
   
     try {
       // Buscar al trabajador por ID
@@ -114,19 +132,18 @@ const verificarConexion = (req, res) => {
         return res.status(404).json({ mensaje: "Trabajador no encontrado" });
       }
   
-      // Actualizar los campos enviados en la solicitud
-      trabajador.nombre = nombre || trabajador.nombre;
-      trabajador.email = email || trabajador.email;
-      trabajador.identificacion = identificacion || trabajador.identificacion;
-      trabajador.puesto = puesto || trabajador.puesto;
-      trabajador.salario = salario || trabajador.salario;
-      trabajador.telefono = telefono || trabajador.telefono;
-  
-      // Actualizar y hashear el password solo si se envía en la solicitud
-      if (password) {
-        const salt = await bcrypt.genSalt(10);
-        trabajador.password = await bcrypt.hash(password, salt);
-      }
+      // Iterar sobre las claves enviadas en el cuerpo de la solicitud
+      Object.keys(datosActualizados).forEach((campo) => {
+        // Evitar actualizar campos sensibles o no válidos
+        if (campo !== "_id" && campo !== "usuarioId" && campo !== "token" && campo !== "confirmado") {
+          // Manejo especial para el campo "password"
+          if (campo === "password" && datosActualizados[campo].trim() !== "") {
+            trabajador[campo] = datosActualizados[campo]; // El middleware `pre('save')` se encargará del hasheo
+          } else if (campo !== "password") {
+            trabajador[campo] = datosActualizados[campo];
+          }
+        }
+      });
   
       // Guardar los cambios en la base de datos
       const trabajadorActualizado = await trabajador.save();
@@ -134,7 +151,7 @@ const verificarConexion = (req, res) => {
       // Enviar respuesta con el trabajador actualizado
       res.json(trabajadorActualizado);
     } catch (error) {
-      console.error(error);
+      console.error("Error al actualizar trabajador:", error);
       res.status(500).json({ mensaje: "Error al actualizar el trabajador" });
     }
   };
@@ -147,6 +164,7 @@ const verificarConexion = (req, res) => {
     buscartrabajadorID,
     eliminarTrabajadorID,
     actualizarTrabajadorID,
-    verificarConexion
+    verificarConexion,
+    traerCampos
   };
   
