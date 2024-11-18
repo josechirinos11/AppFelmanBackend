@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 
 import Usuario from "../models/Usuario.js";
+import Trabajador from "../models/Trabajador.js";
+
 
 const checkAuth = async (req, res, next) => {
   console.log("checkeando ando")
@@ -23,10 +25,26 @@ const checkAuth = async (req, res, next) => {
       // aqui nos regresa de la base de datos la informacion al encontrar el ID
       // sin password token confirmado, ya que el - lo resta de la informacion extraida
       // esa informacion la guarda en una sesion en el req.usuario
-      req.usuario = await Usuario.findById(decoded.id).select(
-        "-password -token -confirmado"
-      );
-      console.log(req.usuario)
+          // Realizamos ambas búsquedas en paralelo
+
+ // Buscamos el usuario en ambos modelos (Usuario y Trabajador)
+ const usuario = await Usuario.findById(decoded.id);
+ const trabajador = await Trabajador.findById(decoded.id);
+
+ // Determinamos el tipo de usuario según la existencia en los modelos
+ if (usuario) {
+   req.usuario = { tipo: "usuario", data: usuario }; // Almacenamos como tipo usuario
+ } else if (trabajador) {
+   req.usuario = { tipo: "trabajador", data: trabajador }; // Almacenamos como tipo trabajador
+ } else {
+   throw new Error("Usuario no encontrado");
+ }
+
+ //     req.usuario = await Usuario.findById(decoded.id).select(
+  //      "-password -token -confirmado"
+ //     );
+
+      console.log('verificando desde backend', req.usuario)
       return next();
     } catch (error) {
       const e = new Error("Token no Válido");

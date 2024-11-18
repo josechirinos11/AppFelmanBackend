@@ -50,21 +50,38 @@ const verificarConexion = (req, res) => {
 }
 
 const traerCampos = async (req, res) => {
-
   try {
-    // Extraer las claves del esquema del modelo Trabajador
-    const campos = Object.keys(Trabajador.schema.obj).filter(
-      (campo) => !['usuarioId', 'token', '__v', '_id'].includes(campo) // Excluye los campos que no quieres incluir
-    );
+    // Verificar el tipo de usuario
+    const { tipo, data } = req.usuario;
 
-    // Devuelve los campos en un arreglo
+    let campos;
+
+    // Si es un Usuario, obtenemos los campos del modelo Usuario
+    if (tipo === "usuario") {
+      campos = Object.keys(Usuario.schema.obj).filter(
+        (campo) => !['token', '__v', '_id'].includes(campo) // Excluye los campos no necesarios
+      );
+    } 
+    // Si es un Trabajador, obtenemos los campos del modelo Trabajador
+    else if (tipo === "trabajador") {
+      campos = Object.keys(Trabajador.schema.obj).filter(
+        (campo) => !['token', '__v', '_id'].includes(campo) // Excluye los campos no necesarios
+      );
+    }
+
+    // Si no se encontró el tipo de usuario
+    if (!campos) {
+      return res.status(400).json({ msg: "Tipo de usuario no válido" });
+    }
+
+    // Devuelve los campos según el tipo de usuario
     return res.json(campos);
   } catch (error) {
-    console.error('Error al obtener los campos del esquema:', error);
+    console.error('Error al obtener los campos:', error);
     return res.status(500).json({ mensaje: 'Error al obtener los campos del esquema' });
   }
+};
 
-}
 
   const traerTrabajadores = async (req, res) => {
     try {
