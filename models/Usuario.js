@@ -23,11 +23,11 @@ const usuarioSchema = mongoose.Schema({
     default: null,
     trim: true,
   },
-  rol: {
-    type: String,
-    enum: ["admin", "empleado"],  // Puedes añadir más roles según sea necesario
-    required: false,
-  },
+
+    rol: {
+      type: [String],
+      required: false,
+    },
   web: {
     type: String,
     default: null,
@@ -40,6 +40,24 @@ const usuarioSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  departamentos: [
+    {
+      departamento: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Departamento", // Referencia al modelo Departamento
+      },
+      title: { // Agregamos el campo title para almacenar el nombre del departamento
+        type: String,
+        required: true, // El título es obligatorio
+      },
+      items: [
+        {
+          name: String,
+          active: Boolean, // Estado del item para este usuario
+        },
+      ],
+    },
+  ],
 });
 
 //aqui en adelante hasheamos el password

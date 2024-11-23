@@ -55,6 +55,28 @@ const trabajadorSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  rol: {
+    type: [String],
+    required: false,
+  },
+  departamentos: [
+    {
+      departamento: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Departamento", // Referencia al modelo Departamento
+      },
+      title: { // Agregamos el campo title para almacenar el nombre del departamento
+        type: String,
+        required: true, // El título es obligatorio
+      },
+      items: [
+        {
+          name: String,
+          active: Boolean, // Estado del item para este usuario
+        },
+      ],
+    },
+  ],
 });
 
 

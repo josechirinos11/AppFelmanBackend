@@ -6,12 +6,13 @@ import emailRegistro from "../helpers/emailRegistro.js";
 import emailOlvidePassword from "../helpers/emailOlvidePassword.js";
 import emailRegistroProduccion from "../helpers/emailRegistroProduccion.js";
 import bcrypt from "bcryptjs";
+import { departamentosInicialesTrabajador } from "../config/departamentosInicialesTrabajador.js";
 
 
 
 
 const agregarTrabajador = async (req, res) => {
-    const { email, nombre, password, usuarioId } = req.body;
+    const { email, nombre, rol, usuarioId, departamentos  } = req.body;
     console.log('agregando trabajador')
   
   
@@ -25,6 +26,13 @@ const agregarTrabajador = async (req, res) => {
     try {
       // Guardar un Nuevo trabajador
       const trabajador = new Trabajador(req.body);
+      // Inicializar los departamentos con los valores de departamentosInicialesTrabajador
+    // Verificar si vienen departamentos en el req.body
+    if (departamentos && Array.isArray(departamentos)) {
+      trabajador.departamentos = departamentos; // Usar los departamentos enviados en el cuerpo de la solicitud
+    } else {
+      trabajador.departamentos = departamentosInicialesTrabajador; // Usar los departamentos predeterminados
+    }
       const trabajadorGuardado = await trabajador.save();
   
       // Enviar el email
@@ -36,7 +44,8 @@ const agregarTrabajador = async (req, res) => {
   
       res.json(trabajadorGuardado);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    res.status(500).json({ msg: "Error al crear el trabajador" });
     }
   
   
