@@ -127,7 +127,7 @@ const autenticar = async (req, res) => {
           nombre: trabajador.nombre,
           email: trabajador.email,
           departamentos: trabajador.departamentos,
-          rol: usuario.rol,
+          rol: trabajador.rol,
           token,
         });
       } else {
@@ -278,58 +278,77 @@ const actualizarPassword = async (req, res) => {
 const buscarUsuarioID = async (req, res) => {
   const { id } = req.params; // Obtener el ID desde los parámetros de la ruta
   try {
-    // Buscar el trabajador por ID
+    // Buscar el usuario por ID
     const usuario = await Usuario.findById(id);
 
-    // Verificar si se encontró el trabajador
-    if (!usuario) {
-      return res.status(404).json({ mensaje: "Trabajador no encontrado" });
+    // Verificar si se encontró el usuario
+    if (usuario) {
+      return res.json(usuario);  // Si se encuentra, devolver el usuario
     }
 
-    // Devolver el trabajador encontrado
-    res.json(usuario);
+    // Si no se encuentra el usuario, buscar el trabajador
+    const trabajador = await Trabajador.findById(id);
+
+    // Verificar si se encontró el trabajador
+    if (trabajador) {
+      return res.json(trabajador);  // Si se encuentra, devolver el trabajador
+    }
+
+    // Si ni el usuario ni el trabajador fueron encontrados
+    return res.status(404).json({ mensaje: "Usuario o Trabajador no encontrado" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: "Error al obtener el trabajador" });
+    res.status(500).json({ mensaje: "Error al obtener el usuario o trabajador" });
   }
 };
 
+
 const actualizarUsuario = async (req, res) => {
-  const { id } = req.params; // Obtener el ID del trabajador desde los parámetros de la ruta
+  const { id } = req.params; // Obtener el ID del trabajador o usuario desde los parámetros de la ruta
   const datosActualizados = req.body; // Todos los datos enviados en la solicitud
 
   try {
-    // Buscar al trabajador por ID
-    const usuario = await Usuario.findById(id);
+    // Buscar primero en el modelo Usuario
+    let recurso = await Usuario.findById(id);
 
-    // Verificar si el trabajador existe
-    if (!usuario) {
-      return res.status(404).json({ mensaje: "usuario no encontrado" });
+    if (!recurso) {
+      // Si no se encuentra en Usuario, buscar en Trabajador
+      recurso = await Trabajador.findById(id);
+      if (!recurso) {
+        return res.status(404).json({ mensaje: "Usuario o Trabajador no encontrado" });
+      }
     }
 
     // Iterar sobre las claves enviadas en el cuerpo de la solicitud
     Object.keys(datosActualizados).forEach((campo) => {
       // Evitar actualizar campos sensibles o no válidos
-      if (campo !== "_id" && campo !== "usuarioId" && campo !== "token" && campo !== "confirmado" && campo !== "departamentos") {
+      if (
+        campo !== "_id" &&
+        campo !== "usuarioId" &&
+        campo !== "token" &&
+        campo !== "confirmado" &&
+        campo !== "departamentos"
+      ) {
         // Manejo especial para el campo "password"
-        if (campo === "password" && datosActualizados[campo].trim() !== "") {
-          usuario[campo] = datosActualizados[campo]; // El middleware `pre('save')` se encargará del hasheo
+        if (campo === "password" && datosActualizados[campo]?.trim() !== "") {
+          recurso[campo] = datosActualizados[campo]; // El middleware `pre('save')` se encargará del hasheo
         } else if (campo !== "password") {
-          usuario[campo] = datosActualizados[campo];
+          recurso[campo] = datosActualizados[campo];
         }
       }
     });
 
     // Guardar los cambios en la base de datos
-    const trabajadorActualizado = await usuario.save();
+    const recursoActualizado = await recurso.save();
 
-    // Enviar respuesta con el trabajador actualizado
-    res.json(trabajadorActualizado);
+    // Enviar respuesta con el recurso actualizado
+    res.json(recursoActualizado);
   } catch (error) {
-    console.error("Error al actualizar trabajador:", error);
-    res.status(500).json({ mensaje: "Error al actualizar el trabajador" });
+    console.error("Error al actualizar el recurso:", error);
+    res.status(500).json({ mensaje: "Error al actualizar el recurso" });
   }
 };
+
 
 const actualizarDepartamentosUsuario = async (req, res) => {
   const { id } = req.params; // Obtener el ID desde los parámetros de la ruta

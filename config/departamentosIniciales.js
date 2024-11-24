@@ -2,20 +2,20 @@ export const departamentosIniciales = [
     {
       title: "Recursos Humanos",
       items: [
-        { name: "Empleados", active: false },
-        { name: "Departamentos", active: false },
-        { name: "Roles y permisos", active: false },
-        { name: "Contratistas y consultores externos", active: false },
+        { name: "Empleados", active: true },
+        { name: "Departamentos", active: true },
+        { name: "Roles y permisos", active: true },
+        { name: "Contratistas y consultores externos", active: true },
       ],
     },
     {
       title: "Clientes y Ventas",
       items: [
-        { name: "Clientes", active: false },
-        { name: "Prospectos", active: false },
-        { name: "Contratos y acuerdos", active: false },
-        { name: "Pedidos y órdenes", active: false },
-        { name: "Facturación y cobros", active: false },
+        { name: "Clientes", active: true },
+        { name: "Prospectos", active: true },
+        { name: "Contratos y acuerdos", active: true },
+        { name: "Pedidos y órdenes", active: true },
+        { name: "Facturación y cobros", active: true },
       ],
     },
     {
@@ -30,19 +30,19 @@ export const departamentosIniciales = [
     {
       title: "Productos y Servicios",
       items: [
-        { name: "Inventario de productos", active: false },
-        { name: "Servicios ofrecidos", active: false },
-        { name: "Gestión de precios", active: false },
-        { name: "Categorías y variantes", active: false },
+        { name: "Inventario de productos", active: true },
+        { name: "Servicios ofrecidos", active: true },
+        { name: "Gestión de precios", active: true },
+        { name: "Categorías y variantes", active: true },
       ],
     },
     {
       title: "Finanzas",
       items: [
-        { name: "Cuentas por cobrar", active: false },
-        { name: "Movimientos de caja", active: false },
-        { name: "Presupuestos y previsiones", active: false },
-        { name: "Impuestos y cumplimiento", active: false },
+        { name: "Cuentas por cobrar", active: true },
+        { name: "Movimientos de caja", active: true },
+        { name: "Presupuestos y previsiones", active: true },
+        { name: "Impuestos y cumplimiento", active: true },
       ],
     },
     {

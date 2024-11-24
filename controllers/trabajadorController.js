@@ -92,15 +92,40 @@ const traerCampos = async (req, res) => {
 };
 
 
-  const traerTrabajadores = async (req, res) => {
+const traerTrabajadores = async (req, res) => {
+  // Verificar el tipo de usuario
+  if (req.usuario.tipo === "usuario") {
+    console.log("es usuario");
+    console.log(req.usuario.data._id);
     try {
-      const trabajadores = await Trabajador.find(); // Traer todos los trabajadores
+       // Buscamos todos los trabajadores que tengan el mismo usuarioId que el usuario actual
+       const trabajadores = await Trabajador.find({ usuarioId: req.usuario.data._id });
       return res.json(trabajadores); // Asegúrate de retornar aquí para evitar más ejecuciones
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ mensaje: "Error al obtener los trabajadores" }); // Asegúrate de retornar aquí también
+      return res.status(500).json({ mensaje: "Error al obtener los trabajadores" });
     }
-  };
+  } else if (req.usuario.tipo === "trabajador") {
+    console.log("es trabajador");
+    console.log(req.usuario.data.usuarioId);
+    try {
+      // Si el tipo de usuario es 'trabajador', buscamos el trabajador con el usuarioId
+      const trabajador = await Trabajador.find({usuarioId: req.usuario.data.usuarioId});
+     
+      if (!trabajador) {
+        return res.status(404).json({ mensaje: "Trabajador no encontrado" });
+      }
+      return res.json(trabajador); // Retornamos el trabajador encontrado
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ mensaje: "Error al obtener el trabajador" });
+    }
+  } else {
+    return res.status(400).json({ mensaje: "Tipo de usuario no válido" });
+  }
+};
+
+
   const buscartrabajadorID = async (req, res) => {
     const { id } = req.params; // Obtener el ID desde los parámetros de la ruta
     try {
