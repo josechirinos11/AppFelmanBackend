@@ -129,6 +129,7 @@ const autenticar = async (req, res) => {
           departamentos: trabajador.departamentos,
           rol: trabajador.rol,
           token,
+          usuarioId: trabajador.usuarioId
         });
       } else {
         const error = new Error("El Password es incorrecto");
