@@ -10,46 +10,80 @@ import { departamentosInicialesTrabajador } from "../config/departamentosInicial
 
 
 
-
 const agregarTrabajador = async (req, res) => {
-    const { email, nombre, rol, usuarioId, departamentos  } = req.body;
-    console.log('agregando trabajador')
-  
-  
-    // Prevenir usuarios duplicados
-    const existeTrabajador = await Trabajador.findOne({ email });
-    if (existeTrabajador) {
-      const error = new Error("Trabajador ya registrado");
-      return res.send('Trabajador ya registrado');
+  const { email, nombre, rol, usuarioId, departamentos } = req.body;
+  console.log("Agregando trabajador...");
+
+  // Log para verificar que recibimos la información del usuario autenticado correctamente
+  console.log("Usuario autenticado:", req.usuario);
+  console.log("Usuario enviado desde el frontend:", req.body);
+
+      // Prevenir usuarios duplicados
+      const existeTrabajador = await Trabajador.findOne({ email });
+      if (existeTrabajador) {
+        const error = new Error("Trabajador ya registrado");
+        return res.send('Trabajador ya registrado');
+      }
+
+  try {
+    // Verificar que el usuario autenticado tenga los permisos necesarios
+    const usuarioAutenticado = req.usuario; // Información pasada por checkAuth
+    if (!usuarioAutenticado) {
+      return res.status(401).json({ msg: "Usuario no autenticado." });
     }
-  
-    try {
-      // Guardar un Nuevo trabajador
-      const trabajador = new Trabajador(req.body);
-      // Inicializar los departamentos con los valores de departamentosInicialesTrabajador
-    // Verificar si vienen departamentos en el req.body
+
+    // Log para verificar los roles del usuario autenticado
+    console.log("Roles del usuario autenticado:", usuarioAutenticado.data.rol);
+
+    // Verificar si tiene un rol permitido (Recursos Humanos o Administrador)
+    const rolPermitido = ["Recursos Humanos", "Administrador"];
+    const tienePermiso = usuarioAutenticado.data.rol.some((rolUsuario) =>
+      rolPermitido.includes(rolUsuario)
+    );
+    console.log("tienes permiso:", tienePermiso);
+    if (!tienePermiso) {
+      return res
+        .status(403)
+        .json({ msg: "No tienes permisos para agregar trabajadores." });
+    }
+    console.log("si es true");
+   
+    console.log("se crea");
+    // Crear un nuevo trabajador
+    const trabajador = new Trabajador(req.body);
+
+    // Inicializar los departamentos
     if (departamentos && Array.isArray(departamentos)) {
-      trabajador.departamentos = departamentos; // Usar los departamentos enviados en el cuerpo de la solicitud
+      trabajador.departamentos = departamentos; // Usar los departamentos enviados
+      trabajador.usuarioId = usuarioAutenticado.data.usuarioId
     } else {
-      trabajador.departamentos = departamentosInicialesTrabajador; // Usar los departamentos predeterminados
+      trabajador.departamentos = departamentosInicialesTrabajador; // Usar los predeterminados
+      trabajador.usuarioId = usuarioAutenticado.data.usuarioId
     }
-      const trabajadorGuardado = await trabajador.save();
-  
-      // Enviar el email
-      emailRegistroProduccion({
-        email,
-        nombre,
-        token: trabajadorGuardado.token,
-      });
-  
-      res.json(trabajadorGuardado);
-    } catch (error) {
-      console.error(error);
+
+    // Log para verificar cómo se está creando el trabajador
+    console.log("Datos del trabajador a guardar:", trabajador);
+
+    // Guardar el trabajador en la base de datos
+    const trabajadorGuardado = await trabajador.save();
+
+    // Enviar el email de registro
+    emailRegistroProduccion({
+      email,
+      nombre,
+      token: trabajadorGuardado.token,
+    });
+
+    // Respuesta exitosa
+    res.json(trabajadorGuardado);
+  } catch (error) {
+    console.error("Error al agregar trabajador:", error);
     res.status(500).json({ msg: "Error al crear el trabajador" });
-    }
-  
-  
   }
+};
+
+
+
   
 const verificarConexion = (req, res) => {
 
@@ -74,7 +108,7 @@ const traerCampos = async (req, res) => {
     // Si es un Trabajador, obtenemos los campos del modelo Trabajador
     else if (tipo === "trabajador") {
       campos = Object.keys(Trabajador.schema.obj).filter(
-        (campo) => !['token', '__v', '_id'].includes(campo) // Excluye los campos no necesarios
+        (campo) => !['token', '__v', '_id', 'usuarioId'].includes(campo) // Excluye los campos no necesarios
       );
     }
 
