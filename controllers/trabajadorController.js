@@ -86,7 +86,7 @@ const agregarTrabajador = async (req, res) => {
 
   
 const verificarConexion = (req, res) => {
-
+console.log("en departamentos")
   return res.json({ mensaje: "Listado de la base de datos" })
 
 
@@ -129,8 +129,7 @@ const traerCampos = async (req, res) => {
 const traerTrabajadores = async (req, res) => {
   // Verificar el tipo de usuario
   if (req.usuario.tipo === "usuario") {
-    console.log("es usuario");
-    console.log(req.usuario.data._id);
+
     try {
        // Buscamos todos los trabajadores que tengan el mismo usuarioId que el usuario actual
        const trabajadores = await Trabajador.find({ usuarioId: req.usuario.data._id });
@@ -140,8 +139,7 @@ const traerTrabajadores = async (req, res) => {
       return res.status(500).json({ mensaje: "Error al obtener los trabajadores" });
     }
   } else if (req.usuario.tipo === "trabajador") {
-    console.log("es trabajador");
-    console.log(req.usuario.data.usuarioId);
+
     try {
       // Si el tipo de usuario es 'trabajador', buscamos el trabajador con el usuarioId
       const trabajador = await Trabajador.find({usuarioId: req.usuario.data.usuarioId});

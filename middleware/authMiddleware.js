@@ -5,7 +5,7 @@ import Trabajador from "../models/Trabajador.js";
 
 
 const checkAuth = async (req, res, next) => {
-  console.log("esto es checkAuth")
+  
   let token;
   // en este if comprobamos que estan enviando por headers authorization el token
   // y que tambien tenga la palabra bearer
@@ -44,7 +44,7 @@ const checkAuth = async (req, res, next) => {
   //      "-password -token -confirmado"
  //     );
 
-      console.log('Usuario desde req.usuario    :', req.usuario.data.email)
+    
       return next();
     } catch (error) {
       const e = new Error("Token no Válido");

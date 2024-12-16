@@ -6,6 +6,10 @@ import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 import trabajadorRoutes from "./routes/trabajadorRoutes.js";
 import administradorRoutes from "./routes/administradorRoutes.js"
+import departamentoRoutes from "./routes/departamentoRoutes.js"
+
+
+
 
 // creando
 const app = express();
@@ -32,6 +36,7 @@ app.use(cors(corsOptions));
 app.use("/felman/Administrador", administradorRoutes)
 app.use("/felman/usuarios", usuarioRoutes);         // Rutas de usuarios
 app.use("/felman/trabajadores", trabajadorRoutes);  // Rutas de trabajadores
+app.use("/felman/departamentos", departamentoRoutes);  // Rutas de trabajadores
 
 
 
