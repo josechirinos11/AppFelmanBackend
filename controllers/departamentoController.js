@@ -12,13 +12,15 @@ import { departamentosInicialesTrabajador } from "../config/departamentosInicial
 
 const buscarDepartamentos = async (req, res) => {
     // Verificar el tipo de usuario
+
+    console.log("ruta departamentos/items");
     if (req.usuario.tipo === "usuario") {
   
       try {
          // Buscamos todos los trabajadores que tengan el mismo usuarioId que el usuario actual
-         const departamentos = await Departamento.find({ usuarioId: req.usuario.data._id });
-         console.log(departamentos);
-        return res.json(departamentos); // Asegúrate de retornar aquí para evitar más ejecuciones
+         const data = await Usuario.find({ usuarioId: req.usuario.data._id });
+         console.log("en buscar departamento...........: ", data);
+        return res.json(data); // Asegúrate de retornar aquí para evitar más ejecuciones
       } catch (error) {
         console.log(error);
         return res.status(500).json({ mensaje: "Error al obtener los departamentos" });
@@ -27,13 +29,13 @@ const buscarDepartamentos = async (req, res) => {
   
       try {
         // Si el tipo de usuario es 'trabajador', buscamos el trabajador con el usuarioId
-        const departamentos = await Departamento.find({usuarioId: req.usuario.data.usuarioId});
+        const data = await Trabajador.find({usuarioId: req.usuario.data.usuarioId});
        
-        if (!departamentos) {
+        if (!data) {
           return res.status(404).json({ mensaje: "departamentos no encontrado" });
         }
-        console.log(departamentos);
-        return res.json(departamentos); // Retornamos el trabajador encontrado
+        console.log("en buscar departamento...........: ", data);
+        return res.json(data); // Retornamos el trabajador encontrado
       } catch (error) {
         console.log(error);
         return res.status(500).json({ mensaje: "Error al obtener los departamento" });
